@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 
+const itemSchema = new mongoose.Schema({
+  description: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  price: { type: Number, required: true },
+});
+
 const invoiceSchema = new mongoose.Schema({
-    clientName: { type: String, required: true },
-    totalBills: { type: Number, required: true },
-    paidAmount: { type: Number, default: 0 },
-    dueAmount: { type: Number, required: true },
-    receiptDetails: [{ date: Date, amount: Number }],
-    createdAt: { type: Date, default: Date.now },
+  billNumber: { type: String, required: true, unique: true },
+  clientName: { type: String, required: true },
+  items: [itemSchema],
+  date: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('Invoice', invoiceSchema);

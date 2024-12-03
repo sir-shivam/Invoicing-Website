@@ -1,65 +1,53 @@
 const express = require('express');
-const Invoice = require('../models/Invoice');
-
 const router = express.Router();
+const Invoice = require('../models/Invoice');
+const Client = require('../models/Client');
 
-// Create a new invoice
-router.post('/create', async (req, res) => {
-    const { clientName, totalBills, paidAmount } = req.body;
-    const dueAmount = totalBills - paidAmount;
+// Save a new invoice
+router.post('/add', async (req, res) => {
+  try {
+    const { billNumber, clientName, items } = req.body;
 
-    try {
-        const invoice = new Invoice({
-            clientName,
-            totalBills,
-            paidAmount,
-            dueAmount,
-        });
-        await invoice.save();
-        res.status(201).json({ success: true, invoice });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+    // Create a new invoice
+    const invoice = new Invoice({ billNumber, clientName, items });
+    const savedInvoice = await invoice.save();
+
+    // Find or create the client
+    let client = await Client.findOne({ name: clientName });
+    if (!client) {
+      client = new Client({ name: clientName, invoices: [] });
     }
+
+    // Add the invoice ID to the client's invoices list
+    client.invoices.push(savedInvoice._id);
+    await client.save();
+
+    res.status(201).json({ message: 'Invoice saved successfully!', invoice: savedInvoice });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 // Get all invoices
-router.get('/', async (req, res) => {
-    try {
-        const invoices = await Invoice.find();
-        res.status(200).json({ success: true, invoices });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
+router.get('/all', async (req, res) => {
+  try {
+    const invoices = await Invoice.find();
+    res.status(200).json(invoices);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Update an invoice
-router.put('/:id', async (req, res) => {
-    const { paidAmount } = req.body;
-
-    try {
-        const invoice = await Invoice.findById(req.params.id);
-        if (!invoice) throw new Error('Invoice not found');
-
-        invoice.paidAmount += paidAmount;
-        invoice.dueAmount -= paidAmount;
-        invoice.receiptDetails.push({ date: new Date(), amount: paidAmount });
-
-        await invoice.save();
-        res.status(200).json({ success: true, invoice });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
-});
-
-// Delete an invoice
-router.delete('/:id', async (req, res) => {
-    try {
-        const invoice = await Invoice.findByIdAndDelete(req.params.id);
-        if (!invoice) throw new Error('Invoice not found');
-        res.status(200).json({ success: true, message: 'Invoice deleted' });
-    } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-    }
+// Get a specific invoice by bill number
+router.get('/:billNumber', async (req, res) => {
+  try {
+    const invoice = await Invoice.findOne({ billNumber: req.params.billNumber });
+    if (!invoice) return res.status(404).json({ message: 'Invoice not found!' });
+    res.status(200).json(invoice);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

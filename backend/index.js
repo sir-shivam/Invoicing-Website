@@ -2,8 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const invoiceRoutes = require('./routes/invoiceRoutes');
-
+const clientRoutes = require('./routes/ClientRouter')
+const stockRoutes = require("./routes/StockRoute")
 const app = express();
+
+
+const cors = require("cors");
+app.use(cors());
+const mongoose = require("mongoose");
+
 
 // Connect to MongoDB
 connectDB();
@@ -13,6 +20,9 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/clients', clientRoutes );
+app.use('/api/stocks', stockRoutes);
+
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
@@ -20,5 +30,5 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-const PORT = 6000;
+const PORT = 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
