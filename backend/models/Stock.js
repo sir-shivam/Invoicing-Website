@@ -6,6 +6,7 @@ const stockSchema = new mongoose.Schema({
     {
       name: { type: String, required: true },
       quantity: { type: Number, required: true }, // Quantity in kg or cartons
+      price: {type: Number}
     },
   ],
 });

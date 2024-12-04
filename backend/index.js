@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const clientRoutes = require('./routes/ClientRouter')
-const stockRoutes = require("./routes/StockRoute")
+const stockRoutes = require("./routes/StockRoute");
+const historyRoutes = require("./routes/HistoryRoute");
 const app = express();
 
 
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/clients', clientRoutes );
 app.use('/api/stocks', stockRoutes);
+app.use('/api/history', historyRoutes);
 
 
 // Error Handling Middleware

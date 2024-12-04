@@ -56,4 +56,33 @@ router.get('/all', async (req, res) => {
   }
 });
 
+
+// Fetch all stock
+router.get('/find', async (req, res) => {
+  try {
+    const stocks = await Stock.find().lean();
+    res.status(200).json(stocks);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add a new stock entry
+router.post('/create', async (req, res) => {
+  try {
+    const { date, fruits } = req.body;
+    if (!date || !fruits || !fruits.length) {
+      return res.status(400).json({ message: "Date and fruits are required" });
+    }
+    const newStock = new Stock({ date, fruits });
+    await newStock.save();
+    res.status(201).json(newStock);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
+
+
 module.exports = router;
