@@ -20,10 +20,10 @@ connectDB();
 app.use(bodyParser.json());
 
 // Routes
-app.use('/invoices', invoiceRoutes);
-app.use('/clients', clientRoutes );
-app.use('/stocks', stockRoutes);
-app.use('/history', historyRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/clients', clientRoutes );
+app.use('/api/stocks', stockRoutes);
+app.use('/api/history', historyRoutes);
 
 
 // Error Handling Middleware
