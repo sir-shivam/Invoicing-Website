@@ -1,0 +1,27 @@
+@media print {
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .thermal-invoice {
+      width: 58mm; /* Adjust based on your thermal printer paper width */
+      font-family: 'Courier New', Courier, monospace; /* Use monospace fonts for readability */
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .thermal-invoice h1, .thermal-invoice h2, .thermal-invoice h3 {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .thermal-invoice .items {
+      border-top: 1px dashed #000;
+      border-bottom: 1px dashed #000;
+      margin: 10px 0;
+      padding: 5px 0;
+    }
+    .thermal-invoice .total {
+      text-align: right;
+    }
+  }
+  
